@@ -170,21 +170,21 @@ Each extracted hash begins with `$pdf$4*4*128*...` indicating PDF revision 4 wit
 
 
 #### Results
-
+|
 | File | Password Found|
 | :---- | :---- | :----|
 | patient_report_1.pdf | `123456` |
 | patient_report_2.pdf | `password` |
-| patient_report_3.pdf | `!@#$%^&` |
+| patient_report_3.pdf | `!@#$%^&` | |
 
 All 3 files cracked successfully using the standard rockyou.txt and JTR_Deafault_Passwords wordlist with no advanced techniques required.
 
 **[PDF opened successfully with the cracked password]**
 
-**patient_report_1**
+**[patient_report_1]**
 <img width="562" height="768" alt="Screenshot 2026-10-02 211754" src="https://github.com/user-attachments/assets/16430d73-9703-47e1-80c5-ca2a4dd70d3a" />
 
-**patient_report_2**
+## patient_report_2**
 <img width="562" height="767" alt="Screenshot 2026-10-02 211845" src="https://github.com/user-attachments/assets/97fd67a4-5098-4daf-b59d-5baf395e3bf7" />
 
 **patient_report_3**
