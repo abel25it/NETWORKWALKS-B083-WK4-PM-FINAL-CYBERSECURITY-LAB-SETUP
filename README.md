@@ -352,7 +352,7 @@ A Web Application Firewall (WAF) was active on the target. Automated tool feroxb
 
 **### 03 — Findings and Proof of Exploitation**
 
-#### Finding 1 — SQL Injection Authentication Bypass (Patient Portal)
+### Finding 1 — SQL Injection Authentication Bypass (Patient Portal)
 
 **Location:** https://medirozahospital.com/patient/login.php
 **Parameter:** `username` (POST)
@@ -369,7 +369,7 @@ Password: [any value]
 **Impact:** Unauthenticated access to the patient portal and all records held within it. Three confidential pathology lab reports were retrieved — S. Dlamini, P. Reddy, E. Thompson.
 ---
 
-#### Finding 2 — Publicly Exposed Database Backup
+### Finding 2 — Publicly Exposed Database Backup
 
 **Location:** https://medirozahospital.com/old/mediroza_db_backup_2019.sql
 **Severity:** 🔴 Critical
@@ -379,7 +379,7 @@ Password: [any value]
 **Impact:** The backup contained the complete personal details of 30 staff members (full names, email addresses, phone numbers, national ID numbers, job titles, and salaries) and the hospital's full shareholder ownership structure (names, shares held, share percentage, share class). This constitutes a severe data breach of personally identifiable information (PII) and confidential financial data.
 ---
 
-#### Finding 3 — Weak Password Policy on Protected Documents
+### Finding 3 — Weak Password Policy on Protected Documents
 
 **Location:** patient_report_1.pdf, patient_report_2.pdf, patient_report_3.pdf
 **Severity:** 🟠 High
@@ -387,7 +387,7 @@ Password: [any value]
 **Description:** All three password-protected patient PDF files were cracked using a standard dictionary attack with the rockyou.txt wordlist. No advanced techniques, rule-based mangling, or brute force were required. Two of the three passwords cracked in under one second.
 
 
-#### Finding 4 — PDF Metadata Disclosure (IT Admin on Clinical Record)
+### Finding 4 — PDF Metadata Disclosure (IT Admin on Clinical Record)
 
 **Location:** patient_report_3.pdf — File Properties → Description → Author
 **Severity:** 🟠 High
@@ -396,7 +396,7 @@ Password: [any value]
 
 **Impact:** An IT administrator account has write access to clinical patient record systems. This violates the principle of least privilege and represents a significant access control gap between IT and clinical roles. It is also a compliance concern under healthcare data protection regulations — clinical records must be authored and managed exclusively by authorised clinical personnel.
 
-#### Finding 5 — Directory Listing Enabled (/old/)
+### Finding 5 — Directory Listing Enabled (/old/)
 
 **Location:** https://medirozahospital.com/old/
 **Severity:** 🟠 High
@@ -404,7 +404,7 @@ Password: [any value]
 **Description:** The `/old/` directory has no index file and directory listing is enabled on the web server. Any visitor to this URL sees a full list of the directory's contents, including file names and sizes. This directly enabled the discovery and download of the database backup in Finding 2.
 
 
-#### Finding 6 — Missing HTTP Security Headers
+### Finding 6 — Missing HTTP Security Headers
 
 **Location:** All pages — HTTP response headers
 **Severity:** 🟡 Medium
@@ -420,7 +420,7 @@ Password: [any value]
 
 ---
 
-#### Finding 7 — CMS Version Disclosed in Page Meta Tags
+### Finding 7 — CMS Version Disclosed in Page Meta Tags
 
 **Location:** Homepage — HTML page source
 **Severity:** 🟡 Medium
@@ -429,7 +429,7 @@ Password: [any value]
 
 ---
 
-#### Finding 8 — Staff Login Hardened Against SQL Injection (Positive Control)
+### Finding 8 — Staff Login Hardened Against SQL Injection (Positive Control)
 
 **Location:** https://medirozahospital.com/staff/login.php
 **Severity:** ℹ️ Informational (Positive Finding)
@@ -440,7 +440,7 @@ This represents an inconsistency in the codebase — one portal is protected whi
 
 ---
 
-#### Finding 9 — IDOR on Patient Download Endpoint — Not Vulnerable
+### Finding 9 — IDOR on Patient Download Endpoint — Not Vulnerable
 
 **Location:** https://medirozahospital.com/patient/download.php?id=
 **Severity:** ℹ️ Informational (Tested, Not Vulnerable)
@@ -484,7 +484,7 @@ $stmt->execute([$username]);
 
 This ensures user input is always treated as data and never interpreted as SQL, regardless of what characters it contains. Apply this fix to every database query in the application, not only the login form.
 
-#### Finding 2 — Exposed Database Backup
+### Finding 2 — Exposed Database Backup
 
 **Immediate actions:**
 1. Delete `mediroza_db_backup_2019.sql` from the web-accessible directory immediately
@@ -493,7 +493,7 @@ This ensures user input is always treated as data and never interpreted as SQL, 
 4. Audit all other directories for similar exposed files
 5. Notify affected staff of the PII exposure and comply with applicable data breach notification obligations
 
-#### Finding 3 — Weak Password Policy
+### Finding 3 — Weak Password Policy
 
 **Enforce the following policy on all protected documents:**
 - Minimum 12 characters
@@ -502,14 +502,14 @@ This ensures user input is always treated as data and never interpreted as SQL, 
 - Use a password manager to generate and store document passwords
 - Different password for each protected document
 
-#### Finding 4 — PDF Metadata / Access Control
+### Finding 4 — PDF Metadata / Access Control
 
 1. Audit all user accounts with write access to the patient records system
 2. Remove access for any account (including IT administrator accounts) that does not require clinical write access as part of their role
 3. Implement role-based access control (RBAC) — clinical records should only be writable by verified clinical personnel
 4. Scrub metadata from all patient-facing documents before distribution using a tool such as `exiftool -all= filename.pdf`
 
-#### Finding 5 — Directory Listing
+### Finding 5 — Directory Listing
 
 Disable directory listing in the web server configuration:
 
@@ -521,7 +521,7 @@ Options -Indexes
 **For LiteSpeed (as used on this server):**
 Disable "Directory Listing" in the LiteSpeed admin panel under Virtual Host → General → Directory Index settings.
 
-#### Finding 6 — Missing Security Headers
+### Finding 6 — Missing Security Headers
 
 Add the following to all HTTP responses in the server or application configuration:
 
@@ -532,13 +532,13 @@ X-Content-Type-Options: nosniff
 Strict-Transport-Security: max-age=31536000; includeSubDomains
 ```
 
-#### Finding 7 — CMS Version Disclosure
+### Finding 7 — CMS Version Disclosure
 
 Remove or mask the CMS version from all HTML meta tags and HTTP headers. There is no user-facing reason to disclose software version information publicly.
 
 ---
 
-## 6. Conclusion
+### 6. Conclusion
 
 During Week 4 of my Cybersecurity & Ethical Hacking training at Networkwalks, I completed a full black-box penetration test against the Mediroza General Hospital training environment. Beginning with no credentials or prior knowledge of the system, I used feroxbuster to map the attack surface, identified and exploited a SQL injection authentication bypass on the patient portal to retrieve three confidential medical records, cracked the password protection on all three files using John the Ripper, and discovered a publicly accessible database backup containing the sensitive personal and financial data of 30 hospital employees and the hospital's complete shareholder structure.
 
