@@ -265,15 +265,15 @@ During review of the 3 retrieved PDFs, file properties were checked on each docu
 | patient_report_3.pdf | j.malik | ❌ Anomaly |
 
 
-**patient_report_1.pdf ✅ Normal**
+### patient_report_1.pdf ✅ Normal
 <img width="806" height="361" alt="image" src="https://github.com/user-attachments/assets/7c191e2a-838a-4cba-abaa-d867de5d0bff" />
 
 
-**patient_report_2.pdf ✅ Normal**
+### patient_report_2.pdf ✅ Normal
 <img width="702" height="357" alt="image" src="https://github.com/user-attachments/assets/880fbe96-1017-4c69-ba73-f26ad9f376f2" />
 
 
-**patient_report_3.pdf ❌ Anomaly**
+### patient_report_3.pdf ❌ Anomaly
 <img width="851" height="371" alt="image" src="https://github.com/user-attachments/assets/711b12df-00a4-46a7-83ec-72303d78cf52" />
 
 
