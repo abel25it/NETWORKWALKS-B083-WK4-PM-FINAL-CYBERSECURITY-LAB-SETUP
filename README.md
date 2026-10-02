@@ -333,7 +333,7 @@ The most severe finding — an unauthenticated, publicly accessible database bac
 | feroxbuster | Latest (Kali) | Directory and endpoint enumeration |
 | Firefox Browser | Latest | Manual testing and WAF bypass |
 | Networkwalks Password Cracker | Latest | PDF password hash cracking |
-| pdf2john.py | Bundled with JTR | PDF hash extraction |
+| pdf2john | Bundled with JTR | PDF hash extraction |
 
 **Methodology — Order of Operations:**
 
