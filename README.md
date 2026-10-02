@@ -156,15 +156,19 @@ Each extracted hash begins with `$pdf$4*4*128*...` indicating PDF revision 4 wit
 
 
 #### Password Cracking with Networkwalks Password Cracker
+
 patient_report_1
+
 <img width="1101" height="897" alt="image" src="https://github.com/user-attachments/assets/3f26d42c-ea4d-4a41-a61c-86cf170b02e5" />
 
 
 patient_report_2
+
 <img width="1120" height="896" alt="image" src="https://github.com/user-attachments/assets/1d995fa1-c5c9-4a99-a352-fba1815ae538" />
 
 
 patient_report_3
+
 <img width="1115" height="902" alt="Screenshot 2026-10-02 211153" src="https://github.com/user-attachments/assets/7dc598a0-2cf5-40ba-8648-b81866f1ab04" />
 
 
@@ -179,15 +183,18 @@ patient_report_3
 All 3 files cracked successfully using the standard rockyou.txt and JTR_Deafault_Passwords wordlist with no advanced techniques required.
 
 > **[PDF opened successfully with the cracked password]**
+
 patient_report_1
 <img width="562" height="768" alt="Screenshot 2026-10-02 211754" src="https://github.com/user-attachments/assets/16430d73-9703-47e1-80c5-ca2a4dd70d3a" />
 
 
 patient_report_2
+
 <img width="562" height="767" alt="Screenshot 2026-10-02 211845" src="https://github.com/user-attachments/assets/97fd67a4-5098-4daf-b59d-5baf395e3bf7" />
 
 
 patient_report_3
+
 <img width="565" height="763" alt="Screenshot 2026-10-02 212029" src="https://github.com/user-attachments/assets/89d885f4-98aa-4020-a68e-7fd7e92e0db1" />
 
 
