@@ -182,21 +182,16 @@ patient_report_3
 
 All 3 files cracked successfully using the standard rockyou.txt and JTR_Deafault_Passwords wordlist with no advanced techniques required.
 
-> **[PDF opened successfully with the cracked password]**
+**[PDF opened successfully with the cracked password]**
 
 patient_report_1
 <img width="562" height="768" alt="Screenshot 2026-10-02 211754" src="https://github.com/user-attachments/assets/16430d73-9703-47e1-80c5-ca2a4dd70d3a" />
 
-
 patient_report_2
-
 <img width="562" height="767" alt="Screenshot 2026-10-02 211845" src="https://github.com/user-attachments/assets/97fd67a4-5098-4daf-b59d-5baf395e3bf7" />
 
-
 patient_report_3
-
 <img width="565" height="763" alt="Screenshot 2026-10-02 212029" src="https://github.com/user-attachments/assets/89d885f4-98aa-4020-a68e-7fd7e92e0db1" />
-
 
 **Analysis:** All three passwords are weak and dictionary-guessable. None required brute force, rule-based mangling, or any effort beyond a standard wordlist.
 
