@@ -6,7 +6,7 @@
 | :---- | :---- |
 | Program/Batch | B083-Networkwalks |
 | Date | October 2026 |
-| Modules Completed | W4-M1 Initial Access — SQL Injection Authentication Bypass W4-M2 Data Extraction — PDF Password Cracking W4-M3 Attack (Cracking) — Critical Data Exposure W4-M4 Penetration Testing Report |
+| Modules Completed | W4-M1 Initial Access — SQL Authentication Bypass W4-M2 Data Extraction — PDF Password Cracking W4-M3 Attack (Cracking) — Critical Data Exposure W4-M4 Penetration Testing Report |
 
 ---
 
@@ -18,9 +18,9 @@ I have performed these activities only on the systems & devices where I had secu
 
 ## 2. Introduction
 
-This report documents the practical activities completed during Week 4 of the Networkwalks Cybersecurity training program — a full black-box penetration test conducted against a controlled, educational target: **Mediroza General Hospital** (https://medirozahospital.com). The engagement was authorised in writing by Networkwalks and scoped to the target domain only.
+This report documents the practical activities completed during Week 4 of the Networkwalks Cybersecurity training program, a full black-box penetration test conducted against a controlled, educational target: **Mediroza General Hospital** (https://medirozahospital.com). The engagement was authorised in writing by Networkwalks and scoped to the target domain only.
 
-The objective was to simulate a real-world attacker with no prior knowledge of the system — discovering attack surfaces through reconnaissance, exploiting identified vulnerabilities to demonstrate real impact, and documenting all findings in a professional report. The four milestones covered initial access via web application exploitation, data extraction from retrieved files, critical server-side data exposure, and a complete penetration testing report.
+The objective was to simulate a real-world attacker with no prior knowledge of the system, discovering attack surfaces through reconnaissance, exploiting identified vulnerabilities to demonstrate real impact, and documenting all findings in a professional report. The four milestones covered initial access via web application exploitation, data extraction from retrieved files, critical server-side data exposure, and a complete penetration testing report.
 
 ---
 
@@ -30,9 +30,8 @@ The objective was to simulate a real-world attacker with no prior knowledge of t
 | :---- | :---- |
 | feroxbuster | Fast directory and file enumeration tool used to discover hidden paths and endpoints on the web server. |
 | Firefox Browser | Real browser used for manual testing of login forms and authentication bypass payloads, bypassing WAF detection. |
-| sqlmap | Automated SQL injection testing tool used to probe login forms for injection vulnerabilities. |
-| John the Ripper (JTR) | Password cracking tool used with the rockyou.txt wordlist to crack extracted PDF password hashes. |
-| pdf2john.py | Hash extraction utility that pulls a crackable hash from an encrypted PDF file for use with JTR. |
+| Networkwalks Password Cracker| Password cracking tool used with the rockyou.txt and JTR_Deafault_Passwords wordlist to crack extracted PDF password hashes. |
+| pdf2john | Hash extraction utility that pulls a crackable hash from an encrypted PDF file for use with JTR. |
 | Kali Linux Terminal | Operating environment for running all command-line tools. |
 
 ---
@@ -48,9 +47,7 @@ The objective was to simulate a real-world attacker with no prior knowledge of t
 The engagement began with active reconnaissance using feroxbuster to map the web server's directory structure. The following command was run against the target:
 
 ```bash
-feroxbuster -u https://medirozahospital.com \
-  -w /usr/share/wordlists/dirb/common.txt \
-  -t 5
+feroxbuster -u https://medirozahospital.com
 ```
 
 feroxbuster cycles through thousands of common path names from a wordlist and reports which URLs return a live response (HTTP 200). Most paths returned 403 (Forbidden) or 404 (Not Found). Two paths returned **HTTP 200 — accessible**:
@@ -60,21 +57,12 @@ feroxbuster cycles through thousands of common path names from a wordlist and re
 | /patient/ | 200 OK | Patient portal — login form present |
 | /old/ | 200 OK | Legacy directory — no authentication |
 
-> **[Insert screenshot: feroxbuster output showing /patient/ and /old/ as 200 responses]**
+<img width="1353" height="713" alt="Screenshot 2026-10-02 183418" src="https://github.com/user-attachments/assets/1beb9554-0005-47bd-9b8f-6bb0b180d143" />
+
 
 #### Step 2 — Staff Login Testing (Default Credentials + SQL Injection)
 
 Before targeting the patient portal, the staff login at `/staff/login.php` was tested. This is documented as a separate finding.
-
-**Default credential testing** — the following combinations were tried directly in Firefox:
-
-| Username | Password | Result |
-| :---- | :---- | :---- |
-| admin | admin | Failed |
-| admin | password | Failed |
-| staff | staff | Failed |
-| doctor | doctor | Failed |
-| mediroza | mediroza | Failed |
 
 All default credential attempts failed. The form returned *"Invalid username or password"* for every combination.
 
@@ -87,8 +75,6 @@ All default credential attempts failed. The form returned *"Invalid username or 
 | `1' OR '1'='1' --` | Failed |
 
 All injection attempts failed on the staff login. The page uses a *"Staff ID"* field (numeric) which appears to use parameterised queries or integer casting, making it resistant to string-based SQL injection. This is documented as a positive security control — see M4 Findings.
-
-> **[Insert screenshot: staff login form showing failed attempt]**
 
 #### Step 3 — Patient Login SQL Injection Authentication Bypass
 
@@ -119,13 +105,17 @@ The single quote (`'`) closes the username string early. The double dash (`-- `)
 | Field | Value |
 | :---- | :---- |
 | Username | `admin' -- ` (note: space after the two dashes) |
-| Password | `test123` (any value) |
+| Password | `123` (any value) |
 
 **Result:** Successful login. Redirected to `/patient/portal.php` showing 3 confidential patient lab reports.
 
-> **[Insert screenshot: patient login form with payload entered]**
+> **[Patient login form with payload entered]**
+<img width="1916" height="861" alt="Screenshot 2026-10-02 184042" src="https://github.com/user-attachments/assets/20495bc5-3298-4de6-883e-fd4322f308c4" />
 
-> **[Insert screenshot: patient portal page showing the 3 PDF lab reports after login]**
+
+> **[Patient portal page showing the 3 PDF lab reports after login]**
+<img width="1917" height="867" alt="Screenshot 2026-10-02 184130" src="https://github.com/user-attachments/assets/ca6e960f-4aef-4f73-85f3-7d8dd9d1daca" />
+
 
 **Files Retrieved:**
 
@@ -137,7 +127,8 @@ The single quote (`'`) closes the username string early. The double dash (`-- `)
 
 All 3 PDF files were downloaded.
 
-> **[Insert screenshot: downloaded PDF files]**
+> **[Downloaded PDF files]**
+<img width="437" height="118" alt="Screenshot 2026-10-02 184913" src="https://github.com/user-attachments/assets/7ad30a19-565c-4fea-bdf9-24534c1db1b8" />
 
 ---
 
@@ -147,52 +138,60 @@ All 3 PDF files were downloaded.
 
 Each PDF was password-protected. The cracking workflow for each file was:
 
-1. Extract a crackable hash using `pdf2john.py`
+1. Extract a crackable hash using `pdf2john`
 2. Run the hash against the rockyou.txt wordlist using John the Ripper
 
 #### Hash Extraction
 
 ```bash
-pdf2john.py patient_report_1.pdf > hash1.txt
-pdf2john.py patient_report_2.pdf > hash2.txt
-pdf2john.py patient_report_3.pdf > hash3.txt
+pdf2john patient_report_1.pdf > hash1.txt
+pdf2john patient_report_2.pdf > hash2.txt
+pdf2john patient_report_3.pdf > hash3.txt
 ```
 
 Each extracted hash begins with `$pdf$4*4*128*...` indicating PDF revision 4 with 128-bit RC4/AES encryption.
 
-> **[Insert screenshot: terminal showing pdf2john.py output for each file]**
+> **[Terminal showing pdf2john for each file]**
+<img width="783" height="361" alt="Screenshot 2026-10-02 185220" src="https://github.com/user-attachments/assets/0b14e81e-d649-4b49-bea7-afb9a3aae385" />
 
-#### Password Cracking with John the Ripper
 
-```bash
-john --wordlist=/usr/share/wordlists/rockyou.txt hash1.txt
-john --wordlist=/usr/share/wordlists/rockyou.txt hash2.txt
-john --wordlist=/usr/share/wordlists/rockyou.txt hash3.txt
-```
+#### Password Cracking with Networkwalks Password Cracker
+patient_report_1
+<img width="1101" height="897" alt="image" src="https://github.com/user-attachments/assets/3f26d42c-ea4d-4a41-a61c-86cf170b02e5" />
 
-To display cracked results:
 
-```bash
-john --show hash1.txt
-john --show hash2.txt
-john --show hash3.txt
-```
+patient_report_2
+<img width="1120" height="896" alt="image" src="https://github.com/user-attachments/assets/1d995fa1-c5c9-4a99-a352-fba1815ae538" />
+
+
+patient_report_3
+<img width="1115" height="902" alt="Screenshot 2026-10-02 211153" src="https://github.com/user-attachments/assets/7dc598a0-2cf5-40ba-8648-b81866f1ab04" />
+
 
 #### Results
 
-| File | Encryption | Password Found | Time to Crack |
-| :---- | :---- | :---- | :---- |
-| patient_report_1.pdf | PDF Rev 4, 128-bit RC4/AES | `good-luck` | ~13 seconds |
-| patient_report_2.pdf | PDF Rev 4, 128-bit RC4/AES | `password1` | < 1 second |
-| patient_report_3.pdf | PDF Rev 4, 128-bit RC4/AES | `1qaz2wsx` | < 1 second |
+| File | Password Found|
+| :---- | :---- | :----|
+| patient_report_1.pdf | `123456` |
+| patient_report_2.pdf | `password` |
+| patient_report_3.pdf | `!@#$%^&` |
 
-All 3 files cracked successfully using the standard rockyou.txt wordlist with no advanced techniques required.
+All 3 files cracked successfully using the standard rockyou.txt and JTR_Deafault_Passwords wordlist with no advanced techniques required.
 
-> **[Insert screenshot: JTR output showing cracked passwords for all 3 files]**
+> **[PDF opened successfully with the cracked password]**
+patient_report_1
+<img width="562" height="768" alt="Screenshot 2026-10-02 211754" src="https://github.com/user-attachments/assets/16430d73-9703-47e1-80c5-ca2a4dd70d3a" />
 
-> **[Insert screenshot: each PDF opened successfully with the cracked password]**
 
-**Analysis:** All three passwords are weak and dictionary-guessable. `password1` is among the most common passwords in existence and appears near the top of rockyou.txt. `1qaz2wsx` is a keyboard-walk pattern that appears complex but is heavily represented in breach wordlists. `good-luck` is a common phrase. None required brute force, rule-based mangling, or any effort beyond a standard wordlist.
+patient_report_2
+<img width="562" height="767" alt="Screenshot 2026-10-02 211845" src="https://github.com/user-attachments/assets/97fd67a4-5098-4daf-b59d-5baf395e3bf7" />
+
+
+patient_report_3
+<img width="565" height="763" alt="Screenshot 2026-10-02 212029" src="https://github.com/user-attachments/assets/89d885f4-98aa-4020-a68e-7fd7e92e0db1" />
+
+
+**Analysis:** All three passwords are weak and dictionary-guessable. None required brute force, rule-based mangling, or any effort beyond a standard wordlist.
 
 ---
 
@@ -237,8 +236,6 @@ Opening the `.sql` file revealed a full database backup containing two critical 
 | Job Title | Yes |
 | Salary | Yes |
 
-> **[Insert screenshot: staff table rows visible in the SQL backup file]**
-
 **Shareholders Table — full ownership structure including:**
 
 | Column | Data Exposed |
@@ -248,7 +245,6 @@ Opening the `.sql` file revealed a full database backup containing two critical 
 | Share Percentage | Yes |
 | Share Class | Yes |
 
-> **[Insert screenshot: shareholders table visible in the SQL backup file]**
 
 #### Step 4 — PDF Metadata Anomaly (j.malik)
 
