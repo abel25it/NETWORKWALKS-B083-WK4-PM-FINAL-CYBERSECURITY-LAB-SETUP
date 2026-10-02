@@ -203,7 +203,6 @@ patient_report_3
 
 During M1 reconnaissance, feroxbuster had already identified `/old/` as returning HTTP 200. Navigating to this path in Firefox revealed **directory listing was enabled** — the web server displayed its own file contents with no authentication required, as if it were an open shared folder.
 
-> **[Insert screenshot: /old/ directory listing in Firefox browser]**
 
 This is a misconfiguration — when no `index.php` or `index.html` file exists in a directory, many web servers default to listing all contents publicly.
 
@@ -217,9 +216,9 @@ mediroza_db_backup_2019.sql
 
 This file was downloaded directly from the browser with no login, no credentials, and no exploitation required — it was publicly accessible.
 
-> **[Insert screenshot: mediroza_db_backup_2019.sql file visible in /old/ directory]**
+> **[mediroza_db_backup_2019.sql file visible in /old/ directory]**
+<img width="1917" height="838" alt="image" src="https://github.com/user-attachments/assets/60290d64-5a20-4853-b7bb-67e20a34e2c0" />
 
-> **[Insert screenshot: file downloaded to local machine]**
 
 #### Step 3 — Contents of the Database Backup
 
@@ -245,6 +244,13 @@ Opening the `.sql` file revealed a full database backup containing two critical 
 | Share Percentage | Yes |
 | Share Class | Yes |
 
+**Contents of the Database Backup**
+
+<img width="982" height="411" alt="image" src="https://github.com/user-attachments/assets/02c60c5a-6df5-4764-ae25-0175c61d3aeb" />
+<img width="1261" height="562" alt="image" src="https://github.com/user-attachments/assets/eb8d4801-e854-485b-abb6-a6a1c1a13d3f" />
+<img width="1072" height="467" alt="image" src="https://github.com/user-attachments/assets/a3653748-f109-4bbf-959f-1e83ca4d33cf" />
+
+
 
 #### Step 4 — PDF Metadata Anomaly (j.malik)
 
@@ -255,16 +261,28 @@ During review of the 3 retrieved PDFs, file properties were checked on each docu
 | File | Author Field | Expected? |
 | :---- | :---- | :---- |
 | patient_report_1.pdf | Mediroza Diagnostics Lab | ✅ Normal |
+<img width="806" height="361" alt="image" src="https://github.com/user-attachments/assets/7c191e2a-838a-4cba-abaa-d867de5d0bff" />
+
+
 | patient_report_2.pdf | Mediroza Diagnostics Lab | ✅ Normal |
+<img width="702" height="357" alt="image" src="https://github.com/user-attachments/assets/880fbe96-1017-4c69-ba73-f26ad9f376f2" />
+
+
 | patient_report_3.pdf | j.malik | ❌ Anomaly |
+<img width="851" height="371" alt="image" src="https://github.com/user-attachments/assets/711b12df-00a4-46a7-83ec-72303d78cf52" />
+
 
 The author `j.malik` was cross-referenced against the leaked staff table and identified as **Jameel Malik, IT Systems Administrator** (staff table row 9, email: j.malik@medirozahospital.com).
 
 A clinical patient pathology report should never be authored through IT administrator credentials. This indicates an access control gap between IT and clinical roles — the IT admin account has write access to patient record systems where it should not.
 
-> **[Insert screenshot: PDF properties showing j.malik as author on patient_report_3.pdf]**
+> **[j.malik as author on patient_report_3.pdf]**
+<img width="851" height="371" alt="image" src="https://github.com/user-attachments/assets/9e33b1f0-beb6-4e2b-8cf2-539dcca4b6e2" />
 
-> **[Insert screenshot: staff table entry for Jameel Malik confirming IT Systems Administrator role]**
+
+> **[Jameel Malik confirming IT Systems Administrator role]**
+<img width="1037" height="27" alt="image" src="https://github.com/user-attachments/assets/2d98f371-2a62-4f81-9657-652b1fee0b9a" />
+
 
 ---
 
@@ -300,7 +318,6 @@ The most severe finding — an unauthenticated, publicly accessible database bac
 
 **Target:** https://medirozahospital.com
 **Type:** Black-box penetration test
-**Duration:** 5 days
 **Authorization:** Written authorisation provided by Networkwalks
 **Rules:** Target domain only. No social engineering. No denial of service. No testing outside agreed scope.
 
@@ -310,8 +327,7 @@ The most severe finding — an unauthenticated, publicly accessible database bac
 | :---- | :---- | :---- |
 | feroxbuster | Latest (Kali) | Directory and endpoint enumeration |
 | Firefox Browser | Latest | Manual testing and WAF bypass |
-| sqlmap | 1.10.9 stable | SQL injection scanning |
-| John the Ripper | Latest (Kali) | PDF password hash cracking |
+| Networkwalks Password Cracker | Latest | PDF password hash cracking |
 | pdf2john.py | Bundled with JTR | PDF hash extraction |
 
 **Methodology — Order of Operations:**
@@ -325,7 +341,7 @@ The most severe finding — an unauthenticated, publicly accessible database bac
 
 **Limitations Encountered:**
 
-A Web Application Firewall (WAF) was active on the target. Automated tools including sqlmap and feroxbuster triggered rate-limiting and IP blocks when operating at standard thread counts or request speeds. This was mitigated by reducing thread counts on feroxbuster (`-t 5`) and conducting all authentication bypass testing manually in Firefox, which the WAF could not distinguish from legitimate user traffic.
+A Web Application Firewall (WAF) was active on the target. Automated tool feroxbuster triggered rate-limiting and IP blocks when operating at standard thread counts or request speeds. This was mitigated by reducing thread counts on feroxbuster (`-t 5`) and conducting all authentication bypass testing manually in Firefox, which the WAF could not distinguish from legitimate user traffic.
 
 ---
 
@@ -346,13 +362,6 @@ Password: [any value]
 ```
 
 **Impact:** Unauthenticated access to the patient portal and all records held within it. Three confidential pathology lab reports were retrieved — S. Dlamini, P. Reddy, E. Thompson.
-
-> **[Insert screenshot: payload entered in username field]**
-
-> **[Insert screenshot: successful redirect to /patient/portal.php]**
-
-> **[Insert screenshot: 3 PDF files visible and downloaded from the portal]**
-
 ---
 
 #### Finding 2 — Publicly Exposed Database Backup
@@ -363,13 +372,6 @@ Password: [any value]
 **Description:** A full MySQL database backup was stored in a publicly accessible directory with no authentication required. The file was downloadable directly from the browser by any visitor who knew or discovered the path. feroxbuster identified the `/old/` directory during reconnaissance.
 
 **Impact:** The backup contained the complete personal details of 30 staff members (full names, email addresses, phone numbers, national ID numbers, job titles, and salaries) and the hospital's full shareholder ownership structure (names, shares held, share percentage, share class). This constitutes a severe data breach of personally identifiable information (PII) and confidential financial data.
-
-> **[Insert screenshot: /old/ directory listing in browser]**
-
-> **[Insert screenshot: mediroza_db_backup_2019.sql file open showing staff table]**
-
-> **[Insert screenshot: shareholders table visible in the backup]**
-
 ---
 
 #### Finding 3 — Weak Password Policy on Protected Documents
@@ -379,19 +381,6 @@ Password: [any value]
 
 **Description:** All three password-protected patient PDF files were cracked using a standard dictionary attack with the rockyou.txt wordlist. No advanced techniques, rule-based mangling, or brute force were required. Two of the three passwords cracked in under one second.
 
-| File | Password | Time to Crack |
-| :---- | :---- | :---- |
-| patient_report_1.pdf | `good-luck` | ~13 seconds |
-| patient_report_2.pdf | `password1` | < 1 second |
-| patient_report_3.pdf | `1qaz2wsx` | < 1 second |
-
-**Impact:** Encryption of sensitive medical documents provides no real protection when the passwords are dictionary-guessable. Any attacker who retrieves the files can read the contents immediately.
-
-> **[Insert screenshot: JTR output showing all 3 passwords cracked]**
-
-> **[Insert screenshot: each PDF opened with cracked password]**
-
----
 
 #### Finding 4 — PDF Metadata Disclosure (IT Admin on Clinical Record)
 
@@ -402,12 +391,6 @@ Password: [any value]
 
 **Impact:** An IT administrator account has write access to clinical patient record systems. This violates the principle of least privilege and represents a significant access control gap between IT and clinical roles. It is also a compliance concern under healthcare data protection regulations — clinical records must be authored and managed exclusively by authorised clinical personnel.
 
-> **[Insert screenshot: PDF properties showing j.malik as author]**
-
-> **[Insert screenshot: staff database entry confirming Jameel Malik as IT Systems Administrator]**
-
----
-
 #### Finding 5 — Directory Listing Enabled (/old/)
 
 **Location:** https://medirozahospital.com/old/
@@ -415,9 +398,6 @@ Password: [any value]
 
 **Description:** The `/old/` directory has no index file and directory listing is enabled on the web server. Any visitor to this URL sees a full list of the directory's contents, including file names and sizes. This directly enabled the discovery and download of the database backup in Finding 2.
 
-> **[Insert screenshot: directory listing page showing file contents]**
-
----
 
 #### Finding 6 — Missing HTTP Security Headers
 
