@@ -295,7 +295,7 @@ A clinical patient pathology report should never be authored through IT administ
 
 ---
 
-### 01 — Executive Summary
+**### 01 — Executive Summary**
 
 A black-box penetration test was conducted against Mediroza General Hospital (https://medirozahospital.com) over a 5-day engagement period. The assessment identified **four critical or high-severity vulnerabilities** that collectively allowed a simulated attacker with no prior access to: bypass authentication and access confidential patient medical records, crack all document-level encryption protecting those records, and retrieve a publicly exposed database backup containing the full personal and financial details of 30 staff members and the hospital's complete shareholder ownership structure.
 
@@ -319,7 +319,7 @@ The most severe finding — an unauthenticated, publicly accessible database bac
 
 ---
 
-### 02 — Scope and Methodology
+**### 02 — Scope and Methodology**
 
 **Target:** https://medirozahospital.com
 **Type:** Black-box penetration test
@@ -350,7 +350,7 @@ A Web Application Firewall (WAF) was active on the target. Automated tool feroxb
 
 ---
 
-### 03 — Findings and Proof of Exploitation
+**### 03 — Findings and Proof of Exploitation**
 
 #### Finding 1 — SQL Injection Authentication Bypass (Patient Portal)
 
@@ -451,7 +451,7 @@ This represents an inconsistency in the codebase — one portal is protected whi
 
 ---
 
-### 04 — Risk Rating
+**### 04 — Risk Rating**
 
 | # | Finding | Severity | Justification |
 | :---- | :---- | :---- | :---- |
@@ -465,7 +465,7 @@ This represents an inconsistency in the codebase — one portal is protected whi
 
 ---
 
-### 05 — Recommendations and Remediation
+**### 05 — Recommendations and Remediation**
 
 #### Finding 1 — SQL Injection
 
@@ -547,5 +547,3 @@ The engagement demonstrated that the two most critical findings — the SQL inje
 I additionally tested surfaces that other analysts may not have covered — the staff login portal was tested for both default credentials and SQL injection and confirmed to be hardened, which represents a positive security control worth recognising. The download endpoint was probed for IDOR and confirmed not vulnerable. Thorough negative findings are part of a complete security assessment.
 
 ---
-
-*This report is submitted as part of the Networkwalks B083 cybersecurity training program. All testing was conducted in a controlled, authorised educational environment. These techniques must never be applied to any system without explicit written permission from the owner.*
